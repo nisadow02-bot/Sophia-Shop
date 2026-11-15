@@ -163,7 +163,7 @@
             </div>
         </header>
 
-        <!-- Navigation Tabs (Only Review, Slips, Contact) -->
+        <!-- Navigation Tabs -->
         <nav class="flex justify-center gap-2 md:gap-4 mb-6 py-2 flex-wrap">
             <button onclick="switchTab('review')" id="tab-btn-review" class="tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-sky-500 text-white shadow-md shadow-sky-200 transform scale-105">
                 <i class="fa-solid fa-comment-dots"></i> รีวิวจากลูกค้า (<span id="review-count">0</span>)
@@ -180,12 +180,9 @@
         <div class="mb-4 px-4 py-2.5 bg-sky-50/90 border border-sky-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between text-xs text-sky-800 shadow-sm gap-2">
             <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
-                <span class="font-semibold">ระบบเชื่อมต่อ Google Sheets: <span id="sync-status-text" class="text-emerald-600 font-bold">พร้อมใช้งาน 🩵</span></span>
+                <span class="font-semibold">ระบบเชื่อมต่อ Google Sheets: <span id="sync-status-text" class="text-emerald-600 font-bold">พร้อมใช้งานอัตโนมัติ 🩵</span></span>
             </div>
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="openConfigModal()" class="px-2.5 py-1 bg-white hover:bg-sky-100 text-sky-700 rounded-xl font-bold transition flex items-center gap-1 shadow-sm text-[11px]">
-                    <i class="fa-solid fa-gear"></i> ตั้งค่าลิงก์สคริปต์
-                </button>
                 <button onclick="manualSync()" class="px-3 py-1 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-rotate"></i> โหลดข้อมูลใหม่
                 </button>
@@ -329,7 +326,7 @@
         🎀 Sophia Shop Hub © 2026 🌸
     </footer>
 
-    <!-- Image Lightbox Modal for Viewing Slips -->
+    <!-- Image Lightbox Modal -->
     <div id="lightbox-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
         <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-sky-300 transition">
             <i class="fa-solid fa-circle-xmark"></i>
@@ -358,7 +355,7 @@
         </div>
     </div>
 
-    <!-- Message / Notification Popup Box -->
+    <!-- Message Popup Box -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="cute-card p-6 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="modal-box">
             <div id="modal-icon" class="w-16 h-16 bg-sky-100 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
@@ -372,17 +369,16 @@
         </div>
     </div>
 
-    <!-- Google Sheets Sync Logic -->
+    <!-- Google Sheets Sync & UI Logic -->
     <script>
-        // Default Google Apps Script Web App URL (สามารถเปลี่ยนเป็น URL ของคุณเองได้ทางปุ่มตั้งค่า)
-        let SCRIPT_URL = localStorage.getItem('sophia_script_url') || "";
+        // ใส่ลิงก์ Web App ของ Google Apps Script ของคุณลงในเครื่องหมายคำพูดนี้ได้เลยครับ
+        let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4AzEuy609O9QDldOSCRrbuNsAgW9XthOmNS91CJaO9cins0pPCQ_tRhYJ9kqdgJ0M/exec";
 
         let reviewsList = [];
         let storiesList = [];
 
         async function fetchFromSheet() {
-            if (!SCRIPT_URL) {
-                // ถ้ายังไม่ได้ตั้งค่า ให้ดึงจาก LocalStorage ชั่วคราว
+            if (!SCRIPT_URL || SCRIPT_URL.includes("...")) {
                 loadLocalFallback();
                 return;
             }
@@ -411,8 +407,7 @@
         }
 
         async function sendToSheet(action, payload) {
-            if (!SCRIPT_URL) {
-                // ถ้ายังไม่ใส่ลิงก์สคริปต์ บันทึกลงเครื่องไว้ก่อนพร้อมแจ้งเตือน
+            if (!SCRIPT_URL || SCRIPT_URL.includes("...")) {
                 if (action === 'addReview') {
                     reviewsList.unshift(payload);
                     localStorage.setItem('sophia_shop_reviews', JSON.stringify(reviewsList));
@@ -422,18 +417,16 @@
                     localStorage.setItem('sophia_shop_stories', JSON.stringify(storiesList));
                     renderStories();
                 }
-                showModal("บันทึกในเครื่องแล้ว", "กรุณาตั้งค่า 'ลิงก์สคริปต์' (ปุ่มตั้งค่าด้านบน) เพื่อให้ข้อมูลซิงค์ไปเครื่องอื่นๆ ครับ 🩵");
                 return true;
             }
 
             try {
-                const response = await fetch(SCRIPT_URL, {
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: action, ...payload })
                 });
-                // รีเฟรชข้อมูลหลังส่ง
                 setTimeout(fetchFromSheet, 1500);
                 return true;
             } catch (err) {
@@ -459,31 +452,6 @@
             playCuteSound('click');
             fetchFromSheet();
             showModal("โหลดข้อมูลใหม่แล้ว! 🌟", "ดึงข้อมูลล่าสุดจากเซิร์ฟเวอร์เรียบร้อยค่ะ 🩵");
-        }
-
-        window.openConfigModal = function() {
-            playCuteSound('click');
-            document.getElementById('script-url-input').value = SCRIPT_URL;
-            const modal = document.getElementById('config-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        window.closeConfigModal = function() {
-            playCuteSound('click');
-            const modal = document.getElementById('config-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        window.saveScriptUrl = function() {
-            playCuteSound('success');
-            const url = document.getElementById('script-url-input').value.trim();
-            SCRIPT_URL = url;
-            localStorage.setItem('sophia_script_url', url);
-            closeConfigModal();
-            fetchFromSheet();
-            showModal("บันทึกสำเร็จ! 🌟", "เชื่อมต่อ Google Script เรียบร้อยแล้วค่ะ 🩵");
         }
     </script>
 
@@ -749,7 +717,7 @@
                     <div class="p-4 bg-white/70 rounded-2xl border border-sky-100 shadow-sm transition hover:bg-white">
                         <div class="flex justify-between items-start mb-1.5">
                             <div class="font-bold text-sky-900 text-sm flex items-center gap-1.5">
-                                <span class="w-7 h-7 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold">${rev.name ? rev.name.charAt(0) : 'ุุุF'}</span>
+                                <span class="w-7 h-7 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-bold">${rev.name ? rev.name.charAt(0) : 'S'}</span>
                                 ${rev.name}
                             </div>
                             <div class="text-xs text-slate-400">${rev.date}</div>
