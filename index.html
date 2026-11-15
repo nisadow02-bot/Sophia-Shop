@@ -276,7 +276,35 @@
         </section>
 
         <!-- TAB 3: CONTACT TAB -->
-<!-- ... upward / unchanged code ... -->
+        <section id="tab-contact" class="tab-content hidden flex-grow">
+            <div class="cute-card p-6 md:p-8 text-center max-w-xl mx-auto w-full">
+                <div class="w-20 h-20 bg-sky-100 text-sky-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-sky-900 mb-2">ช่องทางการติดต่อร้านค้า</h2>
+                <p class="text-xs md:text-sm text-slate-500 mb-6">ติดต่อสอบถาม พูดคุย หรือสั่งซื้อสินค้าได้ตลอด 24 ชั่วโมงเลยค่ะ 🩵</p>
+
+                <div class="space-y-4">
+                    <a href="https://line.me/ti/p/zVMc2-EDYy" target="_blank" onclick="playCuteSound('click')"
+                       class="flex items-center justify-center gap-3 w-full py-4 px-6 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-bold rounded-2xl shadow-lg transition transform hover:-scale-102 text-base md:text-lg">
+                        <i class="fa-brands fa-line text-2xl"></i> แอดไลน์ร้านค้า (Line Official)
+                    </a>
+
+                    <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100 text-xs md:text-sm text-sky-800 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-shield-check text-sky-500 text-lg"></i>
+                        <span>การันตีความปลอดภัย 100% เชื่อถือได้แน่นอนค่ะ 🩵</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-6 text-center text-xs text-sky-700/80 font-medium">
+        🎀 Sophia Shop Hub © 2026 🌸
+    </footer>
+
     <!-- Image Lightbox Modal for Viewing Slips -->
     <div id="lightbox-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
         <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-sky-300 transition">
@@ -305,7 +333,7 @@
     <!-- Firebase SDK & Realtime Database Integration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sophia-shop-default-app';
@@ -320,7 +348,7 @@
 
         let db = null;
         let auth = null;
-        let isFirebaseConnected = false;
+        let isAuthReady = false;
 
         try {
             const app = initializeApp(firebaseConfig);
@@ -334,23 +362,24 @@
                     } else {
                         await signInAnonymously(auth);
                     }
-                    isFirebaseConnected = true;
+                    isAuthReady = true;
+                    console.log("Firebase Auth Successful");
                     initFirestoreListeners();
                 } catch (err) {
-                    console.log("Auth fallback to local storage mode:", err);
+                    console.warn("Auth fallback to local storage mode:", err);
                     initLocalStorageFallback();
                 }
             };
             initAuth();
         } catch (e) {
-            console.log("Firebase not configured, using local storage mode:", e);
+            console.warn("Firebase not configured, using local storage mode:", e);
             initLocalStorageFallback();
         }
 
         function initFirestoreListeners() {
             if (!db) return;
             
-            // Reviews Listener
+            // Reviews Listener with proper path
             const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
             onSnapshot(query(reviewsRef), (snapshot) => {
                 let fetchedReviews = [];
@@ -364,7 +393,7 @@
                 console.error("Error loading reviews:", error);
             });
 
-            // Stories / Slips Listener with proper real-time cloud sync
+            // Stories / Slips Listener with proper path
             const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
             onSnapshot(query(storiesRef), (snapshot) => {
                 let fetchedStories = [];
@@ -380,13 +409,13 @@
         }
 
         window.saveReviewToCloud = async function(newReview) {
-            if (isFirebaseConnected && db) {
+            if (db && isAuthReady) {
                 try {
                     const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
                     await addDoc(reviewsRef, { ...newReview, timestamp: Date.now() });
                     return true;
                 } catch (err) {
-                    console.error("Error saving review:", err);
+                    console.error("Error saving review to cloud:", err);
                     saveReviewLocalFallback(newReview);
                 }
             } else {
@@ -395,7 +424,7 @@
         };
 
         window.saveStoryToCloud = async function(newStory) {
-            if (isFirebaseConnected && db) {
+            if (db && isAuthReady) {
                 try {
                     const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
                     await addDoc(storiesRef, { ...newStory, timestamp: Date.now() });
@@ -418,10 +447,7 @@
             if (savedStories) {
                 try { storiesList = JSON.parse(savedStories); } catch(e) { storiesList = []; }
             } else {
-                // Default sample slip
-                storiesList = [
-                    { id: '1', imageUrl: 'https://i.ibb.co/FLKNdYjR/IMG-3765.jpg', date: 'เมื่อเร็วๆนี้' }
-                ];
+                storiesList = [];
             }
             renderReviews();
             renderStories();
