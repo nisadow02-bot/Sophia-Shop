@@ -164,11 +164,14 @@
         </header>
 
         <!-- Navigation Tabs (Only Review and Contact) -->
-        <nav class="flex justify-center gap-4 mb-6 py-2">
-            <button onclick="switchTab('review')" id="tab-btn-review" class="tab-btn px-6 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-sky-500 text-white shadow-md shadow-sky-200 transform scale-105">
+        <nav class="flex justify-center gap-2 md:gap-4 mb-6 py-2 flex-wrap">
+            <button onclick="switchTab('review')" id="tab-btn-review" class="tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-sky-500 text-white shadow-md shadow-sky-200 transform scale-105">
                 <i class="fa-solid fa-comment-dots"></i> รีวิวจากลูกค้า (<span id="review-count">0</span>)
             </button>
-            <button onclick="switchTab('contact')" id="tab-btn-contact" class="tab-btn px-6 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-white/80 text-sky-700 border border-sky-200 hover:bg-sky-50">
+            <button onclick="switchTab('stories')" id="tab-btn-stories" class="tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-white/80 text-sky-700 border border-sky-200 hover:bg-sky-50">
+                <i class="fa-solid fa-images"></i> รวมเก็บสลิป (<span id="story-count">0</span>)
+            </button>
+            <button onclick="switchTab('contact')" id="tab-btn-contact" class="tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-white/80 text-sky-700 border border-sky-200 hover:bg-sky-50">
                 <i class="fa-solid fa-address-book"></i> ช่องทางการติดต่อ
             </button>
         </nav>
@@ -232,51 +235,57 @@
             </div>
         </section>
 
-        <!-- TAB 2: CONTACT TAB -->
-        <section id="tab-contact" class="tab-content hidden flex-grow">
-            <div class="cute-card p-8 text-center max-w-xl mx-auto">
-                <div class="w-20 h-20 bg-gradient-to-tr from-sky-300 to-sky-100 rounded-full flex items-center justify-center mx-auto mb-4 text-sky-600 text-3xl shadow-md sparkle-badge">
-                    <i class="fa-brands fa-line"></i>
+        <!-- TAB 2: SLIP STORIES TAB -->
+        <section id="tab-stories" class="tab-content hidden flex-grow">
+            <div class="cute-card p-6 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 pb-4 border-b border-sky-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-sky-900 flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-sky-500"></i> รวมเก็บสลิป
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">รวมหลักฐานความน่าเชื่อถือและสลิปการโอนจากลูกค้า 🩵</p>
+                    </div>
+                    <!-- Admin Toggle Button -->
+                    <button onclick="toggleAdminPanel()" class="px-4 py-2 bg-sky-100 hover:bg-sky-200 text-sky-700 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> เพิ่มรูปสลิป (แอดมิน)
+                    </button>
                 </div>
 
-                <h2 class="text-2xl font-bold text-sky-900 mb-2">ช่องทางการติดต่อ Sophia Shop</h2>
-                <p class="text-slate-500 text-sm mb-8">
-                    สนใจสอบถามสินค้า สอบถามข้อมูล หรือติดต่อแอดมิน<br>คลิกแอดไลน์ร้านค้าได้ตลอด 24 ชั่วโมงเลยนะคะ 🩵
-                </p>
-
-                <!-- Line CTA Button -->
-                <div class="space-y-4">
-                    <a href="https://line.me/ti/p/zVMc2-EDYy" target="_blank" onclick="playCuteSound()"
-                       class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-gradient-to-r from-sky-400 via-sky-500 to-indigo-400 rounded-3xl shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 border-2 border-white">
-                        <span class="absolute inset-0 w-full h-full rounded-3xl opacity-0 group-hover:opacity-20 bg-white transition"></span>
-                        <i class="fa-brands fa-line text-2xl mr-3 bg-white text-sky-500 rounded-full p-1.5 shadow"></i>
-                        <span>แอด Line ร้านค้า (Sophia Shop)</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square ml-3 text-sm opacity-80"></i>
-                    </a>
-
-                    <div class="bg-sky-50/80 border border-sky-200 rounded-2xl p-4 text-xs text-sky-800 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-shield-heart text-sky-500 text-base"></i>
-                        <span>ลิงก์ตรงปลอดภัย 100% คลิกแล้วเพิ่มเพื่อนใน Line ได้ทันทีค่ะ</span>
-                    </div>
+                <!-- Admin Upload Box (Hidden by default) -->
+                <div id="admin-panel" class="hidden mb-6 p-4 bg-sky-50/80 rounded-2xl border-2 border-dashed border-sky-300">
+                    <h3 class="text-sm font-bold text-sky-800 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-upload text-sky-500"></i> เพิ่มรูปสลิปใหม่ (สำหรับแอดมิน)
+                    </h3>
+                    <form id="admin-story-form" onsubmit="addAdminStory(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ลิงก์รูปภาพสลิป (URL)</label>
+                            <input type="url" id="admin-story-url" required placeholder="https://i.ibb.co/xxxx/slip.jpg" 
+                                   class="w-full px-3 py-2 bg-white border border-sky-200 rounded-xl text-xs focus:outline-none focus:border-sky-400">
+                        </div>
+                        <button type="submit" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle"></i> อัปโหลดและเผยแพร่ทันที
+                        </button>
+                    </form>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-sky-100 grid grid-cols-2 gap-4 text-left">
-                    <div class="bg-white/60 p-3 rounded-2xl border border-sky-100">
-                        <div class="text-xs text-slate-400 font-medium">เวลาให้บริการ</div>
-                        <div class="text-sm font-bold text-sky-800 mt-0.5"><i class="fa-regular fa-clock text-sky-500 mr-1"></i> เปิด 24 ชั่วโมง</div>
-                    </div>
-                    <div class="bg-white/60 p-3 rounded-2xl border border-sky-100">
-                        <div class="text-xs text-slate-400 font-medium">การตอบกลับ</div>
-                        <div class="text-sm font-bold text-sky-800 mt-0.5"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> รวดเร็วทันใจ</div>
-                    </div>
+                <!-- Stories Grid -->
+                <div id="stories-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <!-- Dynamic Stories -->
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="text-center mt-8 text-xs text-sky-700/70 font-medium pb-4">
-            <p>© 2026 Sophia Shop • Cute Pastel Blue Reviews & Contact • All rights reserved 🩵</p>
-        </footer>
+        <!-- TAB 3: CONTACT TAB -->
+<!-- ... upward / unchanged code ... -->
+    <!-- Image Lightbox Modal for Viewing Slips -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-sky-300 transition">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+        <div class="max-w-xl w-full flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="Slip Preview" class="max-h-[80vh] max-w-full rounded-2xl shadow-2xl object-contain border-4 border-white/20 mb-3">
+            <p class="text-sky-200 text-xs mt-1">Sophia Shop • รวมเก็บสลิปยืนยันความปลอดภัย 🩵</p>
+        </div>
     </div>
 
     <!-- Message / Notification Popup Box -->
@@ -293,9 +302,148 @@
         </div>
     </div>
 
+    <!-- Firebase SDK & Realtime Database Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'sophia-shop-default-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDummyKeyForPreviewModeOnly12345",
+            authDomain: "dummy-project.firebaseapp.com",
+            projectId: "dummy-project",
+            storageBucket: "dummy-project.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: appId
+        };
+
+        let db = null;
+        let auth = null;
+        let isFirebaseConnected = false;
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    isFirebaseConnected = true;
+                    initFirestoreListeners();
+                } catch (err) {
+                    console.log("Auth fallback to local storage mode:", err);
+                    initLocalStorageFallback();
+                }
+            };
+            initAuth();
+        } catch (e) {
+            console.log("Firebase not configured, using local storage mode:", e);
+            initLocalStorageFallback();
+        }
+
+        function initFirestoreListeners() {
+            if (!db) return;
+            
+            // Reviews Listener
+            const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
+            onSnapshot(query(reviewsRef), (snapshot) => {
+                let fetchedReviews = [];
+                snapshot.forEach((doc) => {
+                    fetchedReviews.push({ id: doc.id, ...doc.data() });
+                });
+                fetchedReviews.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                reviewsList = fetchedReviews;
+                renderReviews();
+            }, (error) => {
+                console.error("Error loading reviews:", error);
+            });
+
+            // Stories Listener
+            const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
+            onSnapshot(query(storiesRef), (snapshot) => {
+                let fetchedStories = [];
+                snapshot.forEach((doc) => {
+                    fetchedStories.push({ id: doc.id, ...doc.data() });
+                });
+                fetchedStories.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                storiesList = fetchedStories;
+                renderStories();
+            }, (error) => {
+                console.error("Error loading stories:", error);
+            });
+        }
+
+        window.saveReviewToCloud = async function(newReview) {
+            if (isFirebaseConnected && db) {
+                try {
+                    const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
+                    await addDoc(reviewsRef, { ...newReview, timestamp: Date.now() });
+                    return true;
+                } catch (err) {
+                    console.error("Error saving review:", err);
+                    saveReviewLocalFallback(newReview);
+                }
+            } else {
+                saveReviewLocalFallback(newReview);
+            }
+        };
+
+        window.saveStoryToCloud = async function(newStory) {
+            if (isFirebaseConnected && db) {
+                try {
+                    const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
+                    await addDoc(storiesRef, { ...newStory, timestamp: Date.now() });
+                    return true;
+                } catch (err) {
+                    console.error("Error saving story:", err);
+                    saveStoryLocalFallback(newStory);
+                }
+            } else {
+                saveStoryLocalFallback(newStory);
+            }
+        };
+
+        function initLocalStorageFallback() {
+            const savedReviews = localStorage.getItem('sophia_shop_reviews');
+            if (savedReviews) {
+                try { reviewsList = JSON.parse(savedReviews); } catch(e) { reviewsList = []; }
+            }
+            const savedStories = localStorage.getItem('sophia_shop_stories');
+            if (savedStories) {
+                try { storiesList = JSON.parse(savedStories); } catch(e) { storiesList = []; }
+            } else {
+                // Default sample slip
+                storiesList = [
+                    { id: '1', imageUrl: 'https://i.ibb.co/FLKNdYjR/IMG-3765.jpg', date: 'เมื่อเร็วๆนี้' }
+                ];
+            }
+            renderReviews();
+            renderStories();
+        }
+
+        function saveReviewLocalFallback(newReview) {
+            reviewsList.unshift(newReview);
+            localStorage.setItem('sophia_shop_reviews', JSON.stringify(reviewsList));
+            renderReviews();
+        }
+
+        function saveStoryLocalFallback(newStory) {
+            storiesList.unshift(newStory);
+            localStorage.setItem('sophia_shop_stories', JSON.stringify(storiesList));
+            renderStories();
+        }
+    </script>
+
     <!-- JavaScript Application Logic -->
     <script>
         let audioCtx = null;
+        let storiesList = [];
 
         function initAudio() {
             if (!audioCtx) {
@@ -381,13 +529,93 @@
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-6 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-white/80 text-sky-700 border border-sky-200 hover:bg-sky-50";
+                btn.className = "tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-white/80 text-sky-700 border border-sky-200 hover:bg-sky-50";
             });
 
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            activeBtn.className = "tab-btn px-6 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-sky-500 text-white shadow-md shadow-sky-200 transform scale-105";
+            activeBtn.className = "tab-btn px-5 py-3 rounded-2xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center gap-2 bg-sky-500 text-white shadow-md shadow-sky-200 transform scale-105";
+        }
+
+        function toggleAdminPanel() {
+            playCuteSound('click');
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        async function addAdminStory(event) {
+            event.preventDefault();
+            playCuteSound('success');
+
+            const url = document.getElementById('admin-story-url').value;
+
+            const newStory = {
+                imageUrl: url,
+                date: 'เพิ่มโดยแอดมิน 🩵'
+            };
+
+            if (typeof window.saveStoryToCloud === 'function') {
+                await window.saveStoryToCloud(newStory);
+            }
+
+            document.getElementById('admin-story-form').reset();
+            document.getElementById('admin-panel').classList.add('hidden');
+            showModal("เพิ่มรูปสำเร็จ! 🌟", "เพิ่มรูปสลิปใหม่เรียบร้อยแล้ว ทุกคนสามารถกดดูได้ทันทีค่ะ 🩵");
+        }
+
+        function renderStories() {
+            const container = document.getElementById('stories-grid');
+            if (!container) return;
+            document.getElementById('story-count').innerText = storiesList.length;
+
+            if (storiesList.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-10 text-slate-400 text-sm">
+                        <i class="fa-regular fa-image text-3xl mb-2 text-sky-300"></i>
+                        <p>ยังไม่มีรูปสลิปในขณะนี้ แอดมินสามารถกดเพิ่มรูปได้เลยค่ะ 🩵</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            storiesList.forEach(story => {
+                html += `
+                    <div onclick="openLightbox('${story.imageUrl}')" 
+                         class="group relative bg-white rounded-2xl overflow-hidden border-2 border-sky-100 shadow-sm hover:shadow-md cursor-pointer transition transform hover:-translate-y-1 aspect-square">
+                        <img src="${story.imageUrl}" alt="Slip" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                             onerror="this.src='https://placehold.co/300x300/e0effe/0284c7?text=Sophia+Slip';">
+                        <div class="absolute inset-0 bg-sky-900/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-white/90 text-sky-700 p-3 rounded-full shadow-lg text-sm">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function openLightbox(imgUrl) {
+            playCuteSound('click');
+            const modal = document.getElementById('lightbox-modal');
+            document.getElementById('lightbox-img').src = imgUrl;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            playCuteSound('click');
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         function setRating(rating) {
@@ -403,7 +631,7 @@
             });
         }
 
-        function submitReview(event) {
+        async function submitReview(event) {
             event.preventDefault();
             playCuteSound('success');
 
@@ -418,17 +646,19 @@
                 comment: comment
             };
 
-            reviewsList.unshift(newReview);
-            renderReviews();
+            if (typeof window.saveReviewToCloud === 'function') {
+                await window.saveReviewToCloud(newReview);
+            }
 
             document.getElementById('review-form').reset();
             setRating(5);
 
-            showModal("ส่งรีวิวสำเร็จ! 🌟", "ขอบพระคุณสำหรับรีวิวและความน่ารักนะคะ ทางร้านยินดีให้บริการเสมอค่ะ 🩵");
+            showModal("ส่งรีวิวสำเร็จ! 🌟", "ขอบพระคุณสำหรับรีวิวและความน่ารักนะคะ รีวิวของคุณจะปรากฏบนทุกเครื่องทันทีค่ะ 🩵");
         }
 
         function renderReviews() {
             const container = document.getElementById('reviews-list');
+            if (!container) return;
             document.getElementById('review-count').innerText = reviewsList.length;
 
             if (reviewsList.length === 0) {
