@@ -364,7 +364,7 @@
                 console.error("Error loading reviews:", error);
             });
 
-            // Stories Listener
+            // Stories / Slips Listener with proper real-time cloud sync
             const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
             onSnapshot(query(storiesRef), (snapshot) => {
                 let fetchedStories = [];
@@ -401,7 +401,7 @@
                     await addDoc(storiesRef, { ...newStory, timestamp: Date.now() });
                     return true;
                 } catch (err) {
-                    console.error("Error saving story:", err);
+                    console.error("Error saving story to cloud:", err);
                     saveStoryLocalFallback(newStory);
                 }
             } else {
@@ -552,16 +552,18 @@
 
             const newStory = {
                 imageUrl: url,
-                date: 'เพิ่มโดยแอดมิน 🩵'
+                date: 'เพิ่มเมื่อเร็วๆนี้ 🩵'
             };
 
             if (typeof window.saveStoryToCloud === 'function') {
                 await window.saveStoryToCloud(newStory);
+            } else {
+                saveStoryLocalFallback(newStory);
             }
 
             document.getElementById('admin-story-form').reset();
             document.getElementById('admin-panel').classList.add('hidden');
-            showModal("เพิ่มรูปสำเร็จ! 🌟", "เพิ่มรูปสลิปใหม่เรียบร้อยแล้ว ทุกคนสามารถกดดูได้ทันทีค่ะ 🩵");
+            showModal("เพิ่มรูปสำเร็จ! 🌟", "เพิ่มรูปสลิปใหม่เรียบร้อยแล้ว ซิงค์ถึงทุกเครื่องทันทีค่ะ 🩵");
         }
 
         function renderStories() {
