@@ -334,7 +334,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sophia-shop-default-app';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
@@ -363,7 +363,7 @@
                         await signInAnonymously(auth);
                     }
                     isAuthReady = true;
-                    console.log("Firebase Auth Successful");
+                    console.log("Firebase Auth Successful, UID:", auth.currentUser?.uid);
                     initFirestoreListeners();
                 } catch (err) {
                     console.warn("Auth fallback to local storage mode:", err);
@@ -379,7 +379,7 @@
         function initFirestoreListeners() {
             if (!db) return;
             
-            // Reviews Listener with proper path
+            // Reviews Listener with correct path and error handling
             const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
             onSnapshot(query(reviewsRef), (snapshot) => {
                 let fetchedReviews = [];
@@ -390,10 +390,10 @@
                 reviewsList = fetchedReviews;
                 renderReviews();
             }, (error) => {
-                console.error("Error loading reviews:", error);
+                console.error("Error listening to reviews:", error);
             });
 
-            // Stories / Slips Listener with proper path
+            // Stories / Slips Listener with correct path and error handling
             const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
             onSnapshot(query(storiesRef), (snapshot) => {
                 let fetchedStories = [];
@@ -404,12 +404,16 @@
                 storiesList = fetchedStories;
                 renderStories();
             }, (error) => {
-                console.error("Error loading stories:", error);
+                console.error("Error listening to stories:", error);
             });
         }
 
         window.saveReviewToCloud = async function(newReview) {
-            if (db && isAuthReady) {
+            if (db) {
+                // Ensure auth is complete or attempt anonymous sign in if needed
+                if (!auth.currentUser) {
+                    try { await signInAnonymously(auth); } catch(e) {}
+                }
                 try {
                     const reviewsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
                     await addDoc(reviewsRef, { ...newReview, timestamp: Date.now() });
@@ -424,7 +428,10 @@
         };
 
         window.saveStoryToCloud = async function(newStory) {
-            if (db && isAuthReady) {
+            if (db) {
+                if (!auth.currentUser) {
+                    try { await signInAnonymously(auth); } catch(e) {}
+                }
                 try {
                     const storiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stories');
                     await addDoc(storiesRef, { ...newStory, timestamp: Date.now() });
