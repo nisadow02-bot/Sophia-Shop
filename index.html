@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mumu Store Hub - ธีมสมุดโน้ตพาสเทล</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        peach: {
+                            50: '#FFF5F5',
+                            100: '#FFE3E3',
+                            200: '#FFC9C9',
+                            300: '#FFA8A8',
+                            400: '#FF8787',
+                            500: '#FF6B6B',
+                            600: '#FA5252',
+                            light: '#FFF0F3',
+                            DEFAULT: '#FFB7B2',
+                            dark: '#E89793',
+                            accent: '#FF9AA2'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-image: url('8774.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 183, 178, 0.6);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 183, 178, 0.7);
+            box-shadow: 0 10px 25px -5px rgba(255, 182, 193, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px -5px rgba(255, 150, 160, 0.4);
+            border-color: #ff8787;
+        }
+        @keyframes float-cute {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float-cute {
+            animation: float-cute 3.5s ease-in-out infinite;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 240, 243, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffb7b2;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff8787;
+        }
+    </style>
+</head>
+<body class="text-slate-700 flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full px-6 py-4 flex justify-between items-center z-20 max-w-md mx-auto">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-3.5 h-3.5 bg-peach-500 rounded-full animate-ping shadow-sm"></span>
+            <span class="text-xs font-bold text-peach-700 uppercase tracking-widest bg-white/95 px-3.5 py-1.5 rounded-full shadow-md border border-peach-300 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i> Mumu Cute Hub
+            </span>
+        </div>
+        <button onclick="playClickSound(); openPinModal()" class="glass px-4 py-2 rounded-full text-xs font-semibold text-peach-700 hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md flex items-center gap-1.5 border border-peach-300">
+            <i data-lucide="shield-check" class="w-4 h-4 text-peach-500"></i>
+            <span>แอดมิน</span>
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 flex flex-col items-center justify-start px-4 pb-12 z-10 w-full max-w-md mx-auto">
+        
+        <!-- Profile & Header Section with Extra Cuteness -->
+        <div class="w-full text-center mt-2 mb-6">
+            <div class="relative inline-block mb-4 animate-float-cute">
+                <div class="w-32 h-32 rounded-full p-1.5 bg-gradient-to-tr from-peach-300 via-pink-300 to-peach-500 shadow-2xl">
+                    <img id="profileImg" src="https://placehold.co/200x200/FFE3E3/E89793?text=Mumu" alt="Profile" class="w-full h-full object-cover rounded-full bg-white border-2 border-white">
+                </div>
+                <div class="absolute -bottom-1 -right-1 bg-white p-2 rounded-full shadow-lg text-peach-500 border-2 border-peach-200 animate-bounce">
+                    <i data-lucide="heart" class="w-4 h-4 fill-pink-400 text-pink-500"></i>
+                </div>
+            </div>
+            <div class="glass px-5 py-3 rounded-3xl shadow-md border border-peach-200 inline-block max-w-full">
+                <h1 id="shopName" class="text-2xl font-extrabold text-slate-800 tracking-tight bg-gradient-to-r from-peach-600 to-pink-500 bg-clip-text text-transparent">🎀 Mumu Sweet Store 🎀</h1>
+                <p id="shopBio" class="text-xs text-slate-600 mt-1 font-medium px-2">✨ แหล่งรวมความน่ารัก พาสเทลละมุนหัวใจ รีวิวแน่นๆ 💕</p>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="w-full flex rounded-2xl p-1.5 glass mb-6 shadow-md border border-peach-300">
+            <button onclick="playClickSound(); switchTab('links')" id="tabLinksBtn" class="flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-peach-500 to-pink-400 text-white shadow-md">
+                <i data-lucide="link" class="w-4 h-4 text-white"></i>
+                <span>ช่องทางติดต่อ</span>
+            </button>
+            <button onclick="playClickSound(); switchTab('reviews')" id="tabReviewsBtn" class="flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-slate-600 hover:text-peach-700">
+                <i data-lucide="star" class="w-4 h-4 text-amber-400"></i>
+                <span>รีวิวจากลูกค้า</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: Links Section -->
+        <div id="linksTabContent" class="w-full space-y-3.5 transition-all duration-300">
+            <div id="linksContainer" class="space-y-3.5">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- TAB 2: Reviews Section (Reviews List on TOP, Submit Form on BOTTOM) -->
+        <div id="reviewsTabContent" class="w-full hidden space-y-5 transition-all duration-300">
+            
+            <!-- 1. Reviews List Container (ON TOP) -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="font-bold text-slate-800 text-xs flex items-center gap-1.5 bg-white/90 px-3.5 py-1.5 rounded-full shadow-md border border-peach-200">
+                        <i data-lucide="star-half" class="w-4 h-4 text-amber-500"></i>
+                        <span>รีวิวความประทับใจจากลูกค้า</span>
+                    </h3>
+                    <span id="totalReviewsCount" class="text-xs font-bold text-peach-700 bg-white/95 px-3 py-1.5 rounded-full shadow-md border border-peach-200">0 รีวิว</span>
+                </div>
+                
+                <div id="reviewsContainer" class="space-y-3">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- 2. Submit Review Form Card (ON BOTTOM) -->
+            <div class="glass-card p-5 rounded-3xl shadow-xl border border-white">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-peach-200 to-pink-200 rounded-2xl mx-auto flex items-center justify-center text-peach-700 mb-2 shadow-inner">
+                        <i data-lucide="message-square-heart" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-base font-bold text-slate-800">เขียนรีวิวความประทับใจ ✨</h2>
+                    <p class="text-[11px] text-slate-500">ให้คะแนนร้านค้าและแชร์ความน่ารักให้เพื่อนๆ ชมกันค่า</p>
+                </div>
+
+                <form id="reviewForm" onsubmit="playClickSound(); submitReview(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อของคุณ / ชื่อเล่น</label>
+                        <input type="text" id="reviewAuthor" required placeholder="เช่น คุณมิว, ลูกค้าสุดน่ารัก" class="w-full px-3.5 py-2.5 bg-white/95 border border-peach-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-peach-400 shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">ให้คะแนนความพึงพอใจ</label>
+                        <div class="flex items-center gap-2 bg-white/90 p-2.5 rounded-xl border border-peach-300 justify-center shadow-sm">
+                            <input type="hidden" id="reviewRating" value="5">
+                            <div id="starPicker" class="flex gap-1.5 cursor-pointer">
+                                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400 hover:scale-125 transition-transform" onclick="playClickSound(); setRating(1)"></i>
+                                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400 hover:scale-125 transition-transform" onclick="playClickSound(); setRating(2)"></i>
+                                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400 hover:scale-125 transition-transform" onclick="playClickSound(); setRating(3)"></i>
+                                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400 hover:scale-125 transition-transform" onclick="playClickSound(); setRating(4)"></i>
+                                <i data-lucide="star" class="w-6 h-6 fill-amber-400 text-amber-400 hover:scale-125 transition-transform" onclick="playClickSound(); setRating(5)"></i>
+                            </div>
+                            <span id="ratingText" class="text-xs font-bold text-amber-600 ml-2">(5 ดาว)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">ข้อความรีวิว</label>
+                        <textarea id="reviewComment" required rows="3" placeholder="บริการน่ารัก ส่งไว ของตรงปกสุดๆ ค่ะ 💕" class="w-full px-3.5 py-2.5 bg-white/95 border border-peach-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-peach-400 shadow-sm resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-peach-500 via-pink-400 to-peach-600 text-white font-bold rounded-2xl shadow-lg hover:opacity-95 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 text-xs tracking-wide">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>ส่งรีวิวเข้าระบบ 💕</span>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 text-xs text-slate-700 z-10 font-medium bg-white/70 backdrop-blur-md border-t border-peach-300 shadow-inner">
+        🎀 Mumu Sweet Store Hub © 2026 🌸
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- IPHONE STYLE PIN LOCK MODAL FOR ADMIN -->
+    <!-- ========================================== -->
+    <div id="pinModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex flex-col items-center justify-center hidden transition-all duration-300 opacity-0 scale-95">
+        <div class="w-full max-w-sm p-6 flex flex-col items-center relative">
+            <button onclick="playClickSound(); closePinModal()" class="absolute top-2 right-2 text-white/80 hover:text-white p-2 rounded-full bg-white/10 transition-all">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div class="w-16 h-16 bg-peach-400/20 border border-peach-300/40 rounded-full flex items-center justify-center text-peach-200 mb-4 shadow-inner">
+                <i data-lucide="lock" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-white text-xl font-bold mb-1 tracking-wide">ใส่รหัส PIN แอดมิน</h3>
+            <p class="text-peach-100/70 text-xs mb-8">รหัสผ่านเริ่มต้นคือ <span class="font-bold text-peach-300">1111</span></p>
+
+            <div class="flex gap-4 mb-10">
+                <div id="pinDot0" class="w-4 h-4 rounded-full border-2 border-white/60 transition-all duration-200"></div>
+                <div id="pinDot1" class="w-4 h-4 rounded-full border-2 border-white/60 transition-all duration-200"></div>
+                <div id="pinDot2" class="w-4 h-4 rounded-full border-2 border-white/60 transition-all duration-200"></div>
+                <div id="pinDot3" class="w-4 h-4 rounded-full border-2 border-white/60 transition-all duration-200"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 w-full max-w-[280px]">
+                <button onclick="playClickSound(); pressPin('1')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">1</button>
+                <button onclick="playClickSound(); pressPin('2')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">2</button>
+                <button onclick="playClickSound(); pressPin('3')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">3</button>
+                <button onclick="playClickSound(); pressPin('4')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">4</button>
+                <button onclick="playClickSound(); pressPin('5')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">5</button>
+                <button onclick="playClickSound(); pressPin('6')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">6</button>
+                <button onclick="playClickSound(); pressPin('7')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">7</button>
+                <button onclick="playClickSound(); pressPin('8')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">8</button>
+                <button onclick="playClickSound(); pressPin('9')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">9</button>
+                <div></div>
+                <button onclick="playClickSound(); pressPin('0')" class="w-16 h-16 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xl font-bold flex items-center justify-center transition-all mx-auto backdrop-blur-sm border border-white/10 shadow-lg">0</button>
+                <button onclick="playClickSound(); deletePin()" class="w-16 h-16 rounded-full bg-transparent hover:bg-white/10 active:scale-95 text-white text-sm font-medium flex items-center justify-center transition-all mx-auto">
+                    <i data-lucide="delete" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="pinErrorMsg" class="mt-6 text-rose-300 text-xs font-semibold h-4 transition-all"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ADMIN DASHBOARD MODAL -->
+    <!-- ========================================== -->
+    <div id="adminModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-peach-200 flex flex-col max-h-[90vh]">
+            <div class="bg-gradient-to-r from-peach-500 to-pink-500 p-5 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2 bg-white/20 rounded-xl">
+                        <i data-lucide="settings" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base">Mumu Admin Control Room</h3>
+                        <p class="text-[11px] text-peach-100">จัดการข้อมูลร้านค้า ลิงก์ และดูแลรีวิว</p>
+                    </div>
+                </div>
+                <button onclick="playClickSound(); closeAdminModal()" class="p-2 hover:bg-white/20 rounded-full transition-all text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+                <div class="bg-peach-50/60 p-4 rounded-2xl border border-peach-200 space-y-4 shadow-sm">
+                    <h4 class="font-bold text-peach-900 text-xs flex items-center gap-2">
+                        <i data-lucide="user-pen" class="w-4 h-4 text-peach-600"></i>
+                        <span>ตั้งค่าโปรไฟล์ & ชื่อร้านค้า</span>
+                    </h4>
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">ชื่อร้าน / หัวข้อ</label>
+                            <input type="text" id="adminShopName" class="w-full px-3.5 py-2.5 bg-white border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">คำโปรย / รายละเอียดสั้นๆ</label>
+                            <input type="text" id="adminShopBio" class="w-full px-3.5 py-2.5 bg-white border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">URL รูปโปรไฟล์</label>
+                            <input type="text" id="adminProfileImg" class="w-full px-3.5 py-2.5 bg-white border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                        </div>
+                        <button onclick="playClickSound(); saveProfileSettings()" class="px-4 py-2.5 bg-peach-500 hover:bg-peach-600 text-white rounded-xl font-bold shadow-sm transition-all flex items-center gap-1.5">
+                            <i data-lucide="save" class="w-4 h-4"></i> บันทึกข้อมูลโปรไฟล์
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-peach-50/60 p-4 rounded-2xl border border-peach-200 space-y-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-peach-900 text-xs flex items-center gap-2">
+                            <i data-lucide="link-2" class="w-4 h-4 text-peach-600"></i>
+                            <span>จัดการช่องทางการติดต่อ (Links)</span>
+                        </h4>
+                        <button onclick="playClickSound(); openAddLinkModal()" class="px-3 py-1.5 bg-peach-500 hover:bg-peach-600 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> เพิ่มลิงก์
+                        </button>
+                    </div>
+                    <div id="adminLinksList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="bg-peach-50/60 p-4 rounded-2xl border border-peach-200 space-y-4 shadow-sm">
+                    <h4 class="font-bold text-peach-900 text-xs flex items-center gap-2">
+                        <i data-lucide="star" class="w-4 h-4 text-peach-600"></i>
+                        <span>จัดการรีวิวจากลูกค้า (ลบรีวิวไม่เหมาะสม)</span>
+                    </h4>
+                    <div id="adminReviewsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 border-t border-slate-100 flex justify-end shrink-0">
+                <button onclick="playClickSound(); closeAdminModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-all">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT LINK MODAL -->
+    <div id="linkEditModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden border border-peach-200 p-6">
+            <h3 id="linkModalTitle" class="font-bold text-slate-800 text-base mb-4">เพิ่มช่องทางติดต่อใหม่</h3>
+            <input type="hidden" id="editLinkIndex" value="-1">
+            <div class="space-y-3.5 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ชื่อแพลตฟอร์ม</label>
+                    <input type="text" id="linkTitleInput" placeholder="เช่น Line Official" class="w-full px-3.5 py-2.5 bg-slate-50 border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ลิงก์ URL</label>
+                    <input type="text" id="linkUrlInput" placeholder="https://..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">เลือกไอคอน</label>
+                    <select id="linkIconSelect" class="w-full px-3.5 py-2.5 bg-slate-50 border border-peach-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-peach-400">
+                        <option value="message-circle">💬 Line / แชท</option>
+                        <option value="facebook">📘 Facebook</option>
+                        <option value="instagram">📸 Instagram</option>
+                        <option value="video">🎵 TikTok</option>
+                        <option value="globe">🌐 เว็บไซต์</option>
+                        <option value="phone">📞 โทรศัพท์</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button onclick="playClickSound(); saveLinkData()" class="flex-1 py-2.5 bg-peach-500 hover:bg-peach-600 text-white rounded-xl font-bold shadow-sm transition-all">บันทึก</button>
+                    <button onclick="playClickSound(); closeLinkEditModal()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition-all">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Web Audio API Sound Generator for Cute Click Chime
+        let audioCtx = null;
+        function playClickSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08); // A5 note
+
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {}
+        }
+
+        const defaultProfile = {
+            name: "🎀 Mumu Sweet Store 🎀",
+            bio: "✨ แหล่งรวมความน่ารัก พาสเทลละมุนหัวใจ รีวิวแน่นๆ 💕",
+            image: "https://placehold.co/200x200/FFE3E3/E89793?text=Mumu"
+        };
+        const defaultLinks = [
+            { title: "แอดไลน์สั่งซื้อสินค้า Mumu", url: "https://line.me", icon: "message-circle" },
+            { title: "Facebook Fanpage หลัก", url: "https://facebook.com", icon: "facebook" },
+            { title: "Instagram Mumu Store", url: "https://instagram.com", icon: "instagram" },
+            { title: "TikTok รีวิวสินค้าพาสเทล", url: "https://tiktok.com", icon: "video" }
+        ];
+
+        let profile = JSON.parse(localStorage.getItem('mumu_peach_profile')) || defaultProfile;
+        let links = JSON.parse(localStorage.getItem('mumu_peach_links')) || defaultLinks;
+        let reviews = JSON.parse(localStorage.getItem('mumu_peach_reviews')) || [];
+        let currentPin = "";
+        const correctPin = "1111";
+
+        window.onload = function() {
+            renderPublicView();
+            renderReviews();
+            lucide.createIcons();
+        };
+
+        function renderPublicView() {
+            document.getElementById('profileImg').src = profile.image;
+            document.getElementById('shopName').innerText = profile.name;
+            document.getElementById('shopBio').innerText = profile.bio;
+
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = "";
+            links.forEach(link => {
+                const btn = document.createElement('a');
+                btn.href = link.url;
+                btn.target = "_blank";
+                btn.onclick = () => playClickSound();
+                btn.className = "w-full glass-card p-4 rounded-2xl shadow-md flex items-center justify-between group";
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-peach-200 to-pink-200 flex items-center justify-center text-peach-700 group-hover:bg-peach-500 group-hover:text-white transition-all shadow-inner">
+                            <i data-lucide="${link.icon || 'link'}" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-xs group-hover:text-peach-700 transition-colors">${link.title}</h3>
+                            <p class="text-[10px] text-slate-400 truncate max-w-[200px]">${link.url}</p>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-peach-100 flex items-center justify-center text-peach-600 group-hover:bg-peach-500 group-hover:text-white transition-all shadow-sm">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
+        function switchTab(tab) {
+            const linksBtn = document.getElementById('tabLinksBtn');
+            const reviewsBtn = document.getElementById('tabReviewsBtn');
+            const linksContent = document.getElementById('linksTabContent');
+            const reviewsContent = document.getElementById('reviewsTabContent');
+
+            if(tab === 'links') {
+                linksBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-peach-500 to-pink-400 text-white shadow-md";
+                reviewsBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-slate-600 hover:text-peach-700";
+                linksContent.classList.remove('hidden');
+                reviewsContent.classList.add('hidden');
+            } else {
+                reviewsBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-peach-500 to-pink-400 text-white shadow-md";
+                linksBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2 text-slate-600 hover:text-peach-700";
+                reviewsContent.classList.remove('hidden');
+                linksContent.classList.add('hidden');
+            }
+        }
+
+        function setRating(rating) {
+            document.getElementById('reviewRating').value = rating;
+            document.getElementById('ratingText').innerText = `(${rating} ดาว)`;
+            const stars = document.getElementById('starPicker').getElementsByTagName('i');
+            for(let i = 0; i < stars.length; i++) {
+                if(i < rating) {
+                    stars[i].classList.add('fill-amber-400', 'text-amber-400');
+                    stars[i].classList.remove('text-slate-300');
+                } else {
+                    stars[i].classList.remove('fill-amber-400', 'text-amber-400');
+                    stars[i].classList.add('text-slate-300');
+                }
+            }
+        }
+
+        function submitReview(event) {
+            event.preventDefault();
+            const author = document.getElementById('reviewAuthor').value.trim();
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const comment = document.getElementById('reviewComment').value.trim();
+            const today = new Date().toLocaleDateString('th-TH');
+
+            if(!author || !comment) return;
+
+            reviews.unshift({ author, rating, comment, date: today });
+            localStorage.setItem('mumu_peach_reviews', JSON.stringify(reviews));
+            document.getElementById('reviewForm').reset();
+            setRating(5);
+            renderReviews();
+            alert('✨ ขอบคุณสำหรับรีวิวความประทับใจค่ะ!');
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsContainer');
+            const countBadge = document.getElementById('totalReviewsCount');
+            container.innerHTML = "";
+            countBadge.innerText = `${reviews.length} รีวิว`;
+
+            if(reviews.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs bg-white/90 rounded-2xl border border-peach-200 shadow-sm font-medium">ยังไม่มีรีวิวจากลูกค้า เป็นคนแรกที่รีวิวเลยสิคะ! 💕</div>`;
+                return;
+            }
+
+            reviews.forEach(rev => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-4 rounded-2xl shadow-md border border-white space-y-2";
+                let starsHtml = "";
+                for(let i = 1; i <= 5; i++) {
+                    starsHtml += `<i data-lucide="star" class="w-3.5 h-3.5 ${i <= rev.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'} inline-block"></i>`;
+                }
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-peach-200 text-peach-800 font-bold text-xs flex items-center justify-center shadow-inner">
+                                ${rev.author.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-xs">${rev.author}</h4>
+                                <div class="flex items-center gap-1 mt-0.5">${starsHtml}</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-slate-400">${rev.date}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium pl-10">${rev.comment}</p>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function openPinModal() {
+            currentPin = "";
+            updatePinDots();
+            document.getElementById('pinErrorMsg').innerText = "";
+            document.getElementById('pinModal').classList.remove('hidden', 'opacity-0', 'scale-95');
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.add('hidden');
+        }
+
+        function pressPin(digit) {
+            if(currentPin.length < 4) {
+                currentPin += digit;
+                updatePinDots();
+                if(currentPin.length === 4) setTimeout(verifyPin, 200);
+            }
+        }
+
+        function deletePin() {
+            if(currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDots();
+                document.getElementById('pinErrorMsg').innerText = "";
+            }
+        }
+
+        function updatePinDots() {
+            for(let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`pinDot${i}`);
+                if(i < currentPin.length) dot.classList.add('bg-white', 'border-white');
+                else dot.classList.remove('bg-white', 'border-white');
+            }
+        }
+
+        function verifyPin() {
+            if(currentPin === correctPin) {
+                closePinModal();
+                openAdminModal();
+            } else {
+                document.getElementById('pinErrorMsg').innerText = "รหัส PIN ไม่ถูกต้อง (รหัสเริ่มต้นคือ 1111)";
+                setTimeout(() => { currentPin = ""; updatePinDots(); }, 400);
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminShopName').value = profile.name;
+            document.getElementById('adminShopBio').value = profile.bio;
+            document.getElementById('adminProfileImg').value = profile.image;
+            renderAdminLists();
+            document.getElementById('adminModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+            renderPublicView();
+            renderReviews();
+        }
+
+        function saveProfileSettings() {
+            profile.name = document.getElementById('adminShopName').value;
+            profile.bio = document.getElementById('adminShopBio').value;
+            profile.image = document.getElementById('adminProfileImg').value || defaultProfile.image;
+            localStorage.setItem('mumu_peach_profile', JSON.stringify(profile));
+            alert("บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว 💕");
+        }
+
+        function renderAdminLists() {
+            const linksList = document.getElementById('adminLinksList');
+            linksList.innerHTML = "";
+            links.forEach((link, index) => {
+                linksList.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-peach-200 shadow-sm text-xs">
+                        <span class="font-bold text-slate-800">${link.title}</span>
+                        <button onclick="playClickSound(); deleteLink(${index})" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>`;
+            });
+
+            const reviewsList = document.getElementById('adminReviewsList');
+            reviewsList.innerHTML = "";
+            reviews.forEach((rev, index) => {
+                reviewsList.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-peach-200 shadow-sm text-xs">
+                        <span class="font-bold text-slate-800">${rev.author}: ${rev.comment}</span>
+                        <button onclick="playClickSound(); deleteReview(${index})" class="p-1.5 hover:bg-rose-50 rounded-lg text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        function openAddLinkModal() {
+            document.getElementById('linkEditModal').classList.remove('hidden');
+        }
+        function closeLinkEditModal() {
+            document.getElementById('linkEditModal').classList.add('hidden');
+        }
+        function saveLinkData() {
+            const title = document.getElementById('linkTitleInput').value.trim();
+            const url = document.getElementById('linkUrlInput').value.trim();
+            const icon = document.getElementById('linkIconSelect').value;
+            if(!title || !url) return;
+            links.push({ title, url, icon });
+            localStorage.setItem('mumu_peach_links', JSON.stringify(links));
+            closeLinkEditModal();
+            renderAdminLists();
+            renderPublicView();
+        }
+        function deleteLink(index) {
+            links.splice(index, 1);
+            localStorage.setItem('mumu_peach_links', JSON.stringify(links));
+            renderAdminLists();
+            renderPublicView();
+        }
+        function deleteReview(index) {
+            reviews.splice(index, 1);
+            localStorage.setItem('mumu_peach_reviews', JSON.stringify(reviews));
+            renderAdminLists();
+            renderReviews();
+        }
+    </script>
+</body>
+</html>
+```eof
+
+ผมได้ทำการแก้ไขฟังก์ชันสลับแท็บ (`switchTab`) ให้เรียบร้อยแล้วครับ ตอนนี้คุณสามารถคลิกสลับระหว่าง **"ช่องทางติดต่อ"** และ **"รีวิวจากลูกค้า"** ได้อย่างราบรื่นพร้อมเสียงกดกระดิ่งน่ารักๆ แล้วครับ! สามารถทดลองกดใช้งานทางด้านขวาได้เลยนะคะ 💕
